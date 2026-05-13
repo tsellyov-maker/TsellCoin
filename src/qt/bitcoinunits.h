@@ -1,4 +1,4 @@
-// Copyright (c) 2011-present The Bitcoin Core developers
+// Copyright (c) 2011-present The TsellCoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -26,23 +26,23 @@
 #define THIN_SP_UTF8 REAL_THIN_SP_UTF8
 #define THIN_SP_HTML HTML_HACK_SP
 
-/** Bitcoin unit definitions. Encapsulates parsing and formatting
+/** TsellCoin unit definitions. Encapsulates parsing and formatting
    and serves as list model for drop-down selection boxes.
 */
-class BitcoinUnits: public QAbstractListModel
+class TsellCoinUnits: public QAbstractListModel
 {
     Q_OBJECT
 
 public:
-    explicit BitcoinUnits(QObject *parent);
+    explicit TsellCoinUnits(QObject *parent);
 
-    /** Bitcoin units.
-      @note Source: https://en.bitcoin.it/wiki/Units . Please add only sensible ones
+    /** TsellCoin units.
+      @note Source: https://en.tsellcoin.it/wiki/Units . Please add only sensible ones
      */
     enum class Unit {
-        BTC,
-        mBTC,
-        uBTC,
+        TSC,
+        mTSC,
+        uTSC,
         SAT
     };
     Q_ENUM(Unit)
@@ -108,9 +108,9 @@ public:
 private:
     QList<Unit> unitlist;
 };
-typedef BitcoinUnits::Unit BitcoinUnit;
+typedef TsellCoinUnits::Unit TsellCoinUnit;
 
-QDataStream& operator<<(QDataStream& out, const BitcoinUnit& unit);
-QDataStream& operator>>(QDataStream& in, BitcoinUnit& unit);
+QDataStream& operator<<(QDataStream& out, const TsellCoinUnit& unit);
+QDataStream& operator>>(QDataStream& in, TsellCoinUnit& unit);
 
 #endif // BITCOIN_QT_BITCOINUNITS_H

@@ -1,4 +1,4 @@
-// Copyright (c) 2009-present The Bitcoin Core developers
+// Copyright (c) 2009-present The TsellCoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -1257,7 +1257,7 @@ public:
     uint32_t GetVersion() const;
 
     /** Merge psbt into this. The two psbts must have the same underlying CTransaction (i.e. the
-      * same actual Bitcoin transaction.) Returns true if the merge succeeded, false otherwise. */
+      * same actual TsellCoin transaction.) Returns true if the merge succeeded, false otherwise. */
     [[nodiscard]] bool Merge(const PartiallySignedTransaction& psbt);
     bool AddInput(const PSBTInput& psbtin);
     bool AddOutput(const PSBTOutput& psbtout);

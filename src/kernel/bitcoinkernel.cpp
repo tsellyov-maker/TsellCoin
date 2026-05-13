@@ -1,10 +1,10 @@
-// Copyright (c) 2022-present The Bitcoin Core developers
+// Copyright (c) 2022-present The TsellCoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #define BITCOINKERNEL_BUILD
 
-#include <kernel/bitcoinkernel.h>
+#include <kernel/tsellcoinkernel.h>
 
 #include <chain.h>
 #include <coins.h>
@@ -58,7 +58,7 @@ struct Params;
 using kernel::ChainstateRole;
 using util::ImmediateTaskRunner;
 
-// Define G_TRANSLATION_FUN symbol in libbitcoinkernel library so users of the
+// Define G_TRANSLATION_FUN symbol in libtsellcoinkernel library so users of the
 // library aren't required to export this symbol
 extern const TranslateFn G_TRANSLATION_FUN{nullptr};
 

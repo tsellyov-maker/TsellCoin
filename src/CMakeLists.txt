@@ -1,4 +1,4 @@
-# Copyright (c) 2023-present The Bitcoin Core developers
+# Copyright (c) 2023-present The TsellCoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or https://opensource.org/license/mit/.
 
@@ -38,29 +38,29 @@ if(NOT CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
 endif()
 
 add_custom_target(generate_build_info
-  BYPRODUCTS ${PROJECT_BINARY_DIR}/src/bitcoin-build-info.h
-  COMMAND ${CMAKE_COMMAND} -DBUILD_INFO_HEADER_PATH=${PROJECT_BINARY_DIR}/src/bitcoin-build-info.h -DSOURCE_DIR=${PROJECT_SOURCE_DIR} -P ${PROJECT_SOURCE_DIR}/cmake/script/GenerateBuildInfo.cmake
-  COMMENT "Generating bitcoin-build-info.h"
+  BYPRODUCTS ${PROJECT_BINARY_DIR}/src/tsellcoin-build-info.h
+  COMMAND ${CMAKE_COMMAND} -DBUILD_INFO_HEADER_PATH=${PROJECT_BINARY_DIR}/src/tsellcoin-build-info.h -DSOURCE_DIR=${PROJECT_SOURCE_DIR} -P ${PROJECT_SOURCE_DIR}/cmake/script/GenerateBuildInfo.cmake
+  COMMENT "Generating tsellcoin-build-info.h"
   VERBATIM
 )
-add_library(bitcoin_clientversion STATIC
+add_library(tsellcoin_clientversion STATIC
   clientversion.cpp
 )
-target_link_libraries(bitcoin_clientversion
+target_link_libraries(tsellcoin_clientversion
   PRIVATE
     core_interface
 )
-add_dependencies(bitcoin_clientversion generate_build_info)
+add_dependencies(tsellcoin_clientversion generate_build_info)
 
 add_subdirectory(crypto)
 add_subdirectory(util)
 if(ENABLE_IPC)
   add_subdirectory(ipc)
 else()
-  add_library(bitcoin_ipc STATIC EXCLUDE_FROM_ALL ipc/stub.cpp)
+  add_library(tsellcoin_ipc STATIC EXCLUDE_FROM_ALL ipc/stub.cpp)
 endif()
 
-add_library(bitcoin_consensus STATIC EXCLUDE_FROM_ALL
+add_library(tsellcoin_consensus STATIC EXCLUDE_FROM_ALL
   arith_uint256.cpp
   consensus/merkle.cpp
   consensus/tx_check.cpp
@@ -73,10 +73,10 @@ add_library(bitcoin_consensus STATIC EXCLUDE_FROM_ALL
   script/script_error.cpp
   uint256.cpp
 )
-target_link_libraries(bitcoin_consensus
+target_link_libraries(tsellcoin_consensus
   PRIVATE
     core_interface
-    bitcoin_crypto
+    tsellcoin_crypto
     secp256k1
 )
 
@@ -85,8 +85,8 @@ if(WITH_ZMQ)
 endif()
 
 # Home for common functionality shared by different executables and libraries.
-# Similar to `bitcoin_util` library, but higher-level.
-add_library(bitcoin_common STATIC EXCLUDE_FROM_ALL
+# Similar to `tsellcoin_util` library, but higher-level.
+add_library(tsellcoin_common STATIC EXCLUDE_FROM_ALL
   addresstype.cpp
   base58.cpp
   bech32.cpp
@@ -139,11 +139,11 @@ add_library(bitcoin_common STATIC EXCLUDE_FROM_ALL
   script/signingprovider.cpp
   script/solver.cpp
 )
-target_link_libraries(bitcoin_common
+target_link_libraries(tsellcoin_common
   PRIVATE
     core_interface
-    bitcoin_consensus
-    bitcoin_util
+    tsellcoin_consensus
+    tsellcoin_util
     univalue
     secp256k1
     $<TARGET_NAME_IF_EXISTS:USDT::headers>
@@ -156,26 +156,26 @@ if(ENABLE_WALLET)
   add_subdirectory(wallet)
 
   if(BUILD_WALLET_TOOL)
-    add_executable(bitcoin-wallet
+    add_executable(tsellcoin-wallet
       bitcoin-wallet.cpp
       init/bitcoin-wallet.cpp
       wallet/wallettool.cpp
     )
-    add_windows_resources(bitcoin-wallet bitcoin-wallet-res.rc)
-    add_windows_application_manifest(bitcoin-wallet)
-    target_link_libraries(bitcoin-wallet
+    add_windows_resources(tsellcoin-wallet tsellcoin-wallet-res.rc)
+    add_windows_application_manifest(tsellcoin-wallet)
+    target_link_libraries(tsellcoin-wallet
       core_interface
-      bitcoin_wallet
-      bitcoin_common
-      bitcoin_util
+      tsellcoin_wallet
+      tsellcoin_common
+      tsellcoin_util
     )
-    install_binary_component(bitcoin-wallet HAS_MANPAGE)
+    install_binary_component(tsellcoin-wallet HAS_MANPAGE)
   endif()
 endif()
 
 
-# P2P and RPC server functionality used by `bitcoind` and `bitcoin-qt` executables.
-add_library(bitcoin_node STATIC EXCLUDE_FROM_ALL
+# P2P and RPC server functionality used by `tsellcoind` and `tsellcoin-qt` executables.
+add_library(tsellcoin_node STATIC EXCLUDE_FROM_ALL
   addrdb.cpp
   addrman.cpp
   banman.cpp
@@ -270,15 +270,15 @@ add_library(bitcoin_node STATIC EXCLUDE_FROM_ALL
   validation.cpp
   validationinterface.cpp
   versionbits.cpp
-  $<$<TARGET_EXISTS:bitcoin_wallet>:wallet/init.cpp>
-  $<$<NOT:$<TARGET_EXISTS:bitcoin_wallet>>:dummywallet.cpp>
+  $<$<TARGET_EXISTS:tsellcoin_wallet>:wallet/init.cpp>
+  $<$<NOT:$<TARGET_EXISTS:tsellcoin_wallet>>:dummywallet.cpp>
 )
-target_link_libraries(bitcoin_node
+target_link_libraries(tsellcoin_node
   PRIVATE
     core_interface
-    bitcoin_common
-    bitcoin_util
-    $<TARGET_NAME_IF_EXISTS:bitcoin_zmq>
+    tsellcoin_common
+    tsellcoin_util
+    $<TARGET_NAME_IF_EXISTS:tsellcoin_zmq>
     leveldb
     minisketch
     univalue
@@ -289,105 +289,105 @@ target_link_libraries(bitcoin_node
     $<TARGET_NAME_IF_EXISTS:USDT::headers>
 )
 if(WITH_EMBEDDED_ASMAP)
-  target_compile_definitions(bitcoin_node PRIVATE ENABLE_EMBEDDED_ASMAP=1)
+  target_compile_definitions(tsellcoin_node PRIVATE ENABLE_EMBEDDED_ASMAP=1)
   include(TargetDataSources)
-  target_raw_data_sources(bitcoin_node NAMESPACE node::data
+  target_raw_data_sources(tsellcoin_node NAMESPACE node::data
     node/data/ip_asn.dat
   )
 endif()
 
-# Bitcoin wrapper executable that can call other executables.
+# TsellCoin wrapper executable that can call other executables.
 if(BUILD_BITCOIN_BIN)
-  add_executable(bitcoin bitcoin.cpp)
-  add_windows_resources(bitcoin bitcoin-res.rc)
-  add_windows_application_manifest(bitcoin)
-  target_link_libraries(bitcoin core_interface bitcoin_common bitcoin_util)
-  install_binary_component(bitcoin HAS_MANPAGE)
+  add_executable(tsellcoin bitcoin.cpp)
+  add_windows_resources(tsellcoin tsellcoin-res.rc)
+  add_windows_application_manifest(tsellcoin)
+  target_link_libraries(tsellcoin core_interface tsellcoin_common tsellcoin_util)
+  install_binary_component(tsellcoin HAS_MANPAGE)
 endif()
 
-# Bitcoin Core bitcoind.
+# TsellCoin Core tsellcoind.
 if(BUILD_DAEMON)
-  add_executable(bitcoind
+  add_executable(tsellcoind
     bitcoind.cpp
     init/bitcoind.cpp
   )
-  add_windows_resources(bitcoind bitcoind-res.rc)
-  add_windows_application_manifest(bitcoind)
-  target_link_libraries(bitcoind
+  add_windows_resources(tsellcoind tsellcoind-res.rc)
+  add_windows_application_manifest(tsellcoind)
+  target_link_libraries(tsellcoind
     core_interface
-    bitcoin_node
-    $<TARGET_NAME_IF_EXISTS:bitcoin_wallet>
+    tsellcoin_node
+    $<TARGET_NAME_IF_EXISTS:tsellcoin_wallet>
   )
-  install_binary_component(bitcoind HAS_MANPAGE)
+  install_binary_component(tsellcoind HAS_MANPAGE)
 endif()
 if(ENABLE_IPC AND BUILD_DAEMON)
-  add_executable(bitcoin-node
+  add_executable(tsellcoin-node
     bitcoind.cpp
-    init/bitcoin-node.cpp
+    init/tsellcoin-node.cpp
   )
-  target_link_libraries(bitcoin-node
+  target_link_libraries(tsellcoin-node
     core_interface
-    bitcoin_node
-    bitcoin_ipc
-    $<TARGET_NAME_IF_EXISTS:bitcoin_wallet>
+    tsellcoin_node
+    tsellcoin_ipc
+    $<TARGET_NAME_IF_EXISTS:tsellcoin_wallet>
   )
-  install_binary_component(bitcoin-node INTERNAL)
+  install_binary_component(tsellcoin-node INTERNAL)
 endif()
 
 
-add_library(bitcoin_cli STATIC EXCLUDE_FROM_ALL
+add_library(tsellcoin_cli STATIC EXCLUDE_FROM_ALL
   compat/stdin.cpp
   rpc/client.cpp
 )
-target_link_libraries(bitcoin_cli
+target_link_libraries(tsellcoin_cli
   PUBLIC
     core_interface
     univalue
 )
 
 
-# Bitcoin Core RPC client
+# TsellCoin Core RPC client
 if(BUILD_CLI)
-  add_executable(bitcoin-cli bitcoin-cli.cpp init/basic.cpp)
-  add_windows_resources(bitcoin-cli bitcoin-cli-res.rc)
-  add_windows_application_manifest(bitcoin-cli)
-  target_link_libraries(bitcoin-cli
+  add_executable(tsellcoin-cli bitcoin-cli.cpp init/basic.cpp)
+  add_windows_resources(tsellcoin-cli tsellcoin-cli-res.rc)
+  add_windows_application_manifest(tsellcoin-cli)
+  target_link_libraries(tsellcoin-cli
     core_interface
-    bitcoin_cli
-    bitcoin_common
-    bitcoin_ipc
-    bitcoin_util
+    tsellcoin_cli
+    tsellcoin_common
+    tsellcoin_ipc
+    tsellcoin_util
     libevent::core
     libevent::extra
   )
-  install_binary_component(bitcoin-cli HAS_MANPAGE)
+  install_binary_component(tsellcoin-cli HAS_MANPAGE)
 endif()
 
 
 if(BUILD_TX)
-  add_executable(bitcoin-tx bitcoin-tx.cpp)
-  add_windows_resources(bitcoin-tx bitcoin-tx-res.rc)
-  add_windows_application_manifest(bitcoin-tx)
-  target_link_libraries(bitcoin-tx
+  add_executable(tsellcoin-tx bitcoin-tx.cpp)
+  add_windows_resources(tsellcoin-tx tsellcoin-tx-res.rc)
+  add_windows_application_manifest(tsellcoin-tx)
+  target_link_libraries(tsellcoin-tx
     core_interface
-    bitcoin_common
-    bitcoin_util
+    tsellcoin_common
+    tsellcoin_util
     univalue
   )
-  install_binary_component(bitcoin-tx HAS_MANPAGE)
+  install_binary_component(tsellcoin-tx HAS_MANPAGE)
 endif()
 
 
 if(BUILD_UTIL)
-  add_executable(bitcoin-util bitcoin-util.cpp)
-  add_windows_resources(bitcoin-util bitcoin-util-res.rc)
-  add_windows_application_manifest(bitcoin-util)
-  target_link_libraries(bitcoin-util
+  add_executable(tsellcoin-util bitcoin-util.cpp)
+  add_windows_resources(tsellcoin-util tsellcoin-util-res.rc)
+  add_windows_application_manifest(tsellcoin-util)
+  target_link_libraries(tsellcoin-util
     core_interface
-    bitcoin_common
-    bitcoin_util
+    tsellcoin_common
+    tsellcoin_util
   )
-  install_binary_component(bitcoin-util HAS_MANPAGE)
+  install_binary_component(tsellcoin-util HAS_MANPAGE)
 endif()
 
 
@@ -402,16 +402,16 @@ if(BUILD_KERNEL_LIB)
     add_subdirectory(test/kernel)
   endif()
   if(BUILD_UTIL_CHAINSTATE)
-    add_executable(bitcoin-chainstate
-      bitcoin-chainstate.cpp
+    add_executable(tsellcoin-chainstate
+      tsellcoin-chainstate.cpp
     )
-    add_windows_application_manifest(bitcoin-chainstate)
-    target_link_libraries(bitcoin-chainstate
+    add_windows_application_manifest(tsellcoin-chainstate)
+    target_link_libraries(tsellcoin-chainstate
       PRIVATE
         core_interface
-        bitcoinkernel
+        tsellcoinkernel
     )
-    install_binary_component(bitcoin-chainstate INTERNAL)
+    install_binary_component(tsellcoin-chainstate INTERNAL)
   endif()
 endif()
 

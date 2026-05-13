@@ -27,3 +27,13 @@ target/
 /guix-build-*
 
 /ci/scratch/
+
+# Local TsellCoin runtime/build files
+build/
+*.bak
+*.before-*
+*.log
+.DS_Store
+
+# Local node data
+.tsellcoin-node*/

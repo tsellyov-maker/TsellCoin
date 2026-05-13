@@ -1,34 +1,34 @@
-# Copyright (c) 2024-present The Bitcoin Core developers
+# Copyright (c) 2024-present The TsellCoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or https://opensource.org/license/mit/.
 
 set(CMAKE_AUTOMOC_MOC_OPTIONS "-p${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_executable(test_bitcoin-qt
+add_executable(test_tsellcoin-qt
   apptests.cpp
   optiontests.cpp
   rpcnestedtests.cpp
   test_main.cpp
   uritests.cpp
   util.cpp
-  ../../init/bitcoin-qt.cpp
+  ../../init/tsellcoin-qt.cpp
 )
 
-add_windows_application_manifest(test_bitcoin-qt)
+add_windows_application_manifest(test_tsellcoin-qt)
 
-target_link_libraries(test_bitcoin-qt
+target_link_libraries(test_tsellcoin-qt
   core_interface
-  bitcoinqt
+  tsellcoinqt
   test_util
-  bitcoin_node
+  tsellcoin_node
   Boost::headers
   Qt6::Test
 )
 
-import_plugins(test_bitcoin-qt)
+import_plugins(test_tsellcoin-qt)
 
 if(ENABLE_WALLET)
-  target_sources(test_bitcoin-qt
+  target_sources(test_tsellcoin-qt
     PRIVATE
       addressbooktests.cpp
       wallettests.cpp
@@ -36,12 +36,12 @@ if(ENABLE_WALLET)
   )
 endif()
 
-add_test(NAME test_bitcoin-qt
-  COMMAND test_bitcoin-qt
+add_test(NAME test_tsellcoin-qt
+  COMMAND test_tsellcoin-qt
 )
 if(WIN32 AND VCPKG_TARGET_TRIPLET)
   set(plugin_path "$<SHELL_PATH:$<PATH:GET_PARENT_PATH,$<PATH:GET_PARENT_PATH,$<TARGET_PROPERTY:Qt6::QWindowsIntegrationPlugin,LOCATION_$<CONFIG>>>>>")
-  set_property(TEST test_bitcoin-qt APPEND PROPERTY
+  set_property(TEST test_tsellcoin-qt APPEND PROPERTY
     ENVIRONMENT_MODIFICATION
       # On Windows, vcpkg configures Qt with `-opengl dynamic`, which makes
       # the "minimal" platform plugin unusable due to internal Qt bugs.
@@ -51,4 +51,4 @@ if(WIN32 AND VCPKG_TARGET_TRIPLET)
   unset(plugin_path)
 endif()
 
-install_binary_component(test_bitcoin-qt INTERNAL)
+install_binary_component(test_tsellcoin-qt INTERNAL)

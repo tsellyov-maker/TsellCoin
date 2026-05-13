@@ -1,20 +1,20 @@
 v31.0 Release Notes
 ===================
 
-Bitcoin Core version 31.0 is now available from:
+TsellCoin Core version 31.0 is now available from:
 
-  <https://bitcoincore.org/bin/bitcoin-core-31.0/>
+  <https://tsellcoincore.org/bin/tsellcoin-core-31.0/>
 
 This release includes new features, various bug fixes and performance
 improvements, as well as updated translations.
 
 Please report bugs using the issue tracker at GitHub:
 
-  <https://github.com/bitcoin/bitcoin/issues>
+  <https://github.com/tsellcoin/tsellcoin/issues>
 
 To receive security and update notifications, please subscribe to:
 
-  <https://bitcoincore.org/en/list/announcements/join/>
+  <https://tsellcoincore.org/en/list/announcements/join/>
 
 
 With the release of this new major version, versions `28.x` and
@@ -31,20 +31,20 @@ How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes in some cases), then run the installer
-(on Windows) or just copy over `/Applications/Bitcoin-Qt` (on macOS) or
-`bitcoind`/`bitcoin-qt` (on Linux).
+(on Windows) or just copy over `/Applications/TsellCoin-Qt` (on macOS) or
+`tsellcoind`/`tsellcoin-qt` (on Linux).
 
-Upgrading directly from a version of Bitcoin Core that has reached its EOL is
+Upgrading directly from a version of TsellCoin Core that has reached its EOL is
 possible, but it might take some time if the data directory needs to be
-migrated. Old wallet versions of Bitcoin Core are generally supported.
+migrated. Old wallet versions of TsellCoin Core are generally supported.
 
 Compatibility
 ==============
 
-Bitcoin Core is supported and tested on the following operating systems or
-newer: Linux Kernel 3.17, macOS 14, and Windows 10 (version 1903). Bitcoin Core
+TsellCoin Core is supported and tested on the following operating systems or
+newer: Linux Kernel 3.17, macOS 14, and Windows 10 (version 1903). TsellCoin Core
 should also work on most other Unix-like systems but is not as frequently tested
-on them. It is not recommended to use Bitcoin Core on unsupported systems.
+on them. It is not recommended to use TsellCoin Core on unsupported systems.
 
 Notable changes
 ===============
@@ -55,7 +55,7 @@ but increases memory usage. On some systems (for example when running in
 containers), the detected RAM may exceed the memory actually available, which
 can lead to out-of-memory conditions. To maintain the previous behavior, set
 `-dbcache=450`. See
-[reduce-memory.md](https://github.com/bitcoin/bitcoin/blob/master/doc/reduce-memory.md)
+[reduce-memory.md](https://github.com/tsellcoin/tsellcoin/blob/master/doc/reduce-memory.md)
 for further guidance on low-memory systems. (#34692)
 
 Mempool
@@ -89,8 +89,8 @@ strictly better than before the replacement. This eliminates all known cases of
 replacements occurring that make the mempool worse off, which was possible under
 previous RBF rules. For singleton transactions (that are in clusters by
 themselves) it's sufficient for a replacement to have a higher fee and feerate
-than the original. See [delvingbitcoin.org
-post](https://delvingbitcoin.org/t/an-overview-of-the-cluster-mempool-proposal/393#rbf-can-now-be-made-incentive-compatible-for-miners-11)
+than the original. See [delvingtsellcoin.org
+post](https://delvingtsellcoin.org/t/an-overview-of-the-cluster-mempool-proposal/393#rbf-can-now-be-made-incentive-compatible-for-miners-11)
 for more information.
 
 - Two new RPCs have been added: `getmempoolcluster` will provide the set of
@@ -111,9 +111,9 @@ requiring similar functionality employ TRUC transactions and sibling eviction
 instead going forward.
 
 - Some additional discussion can be found at
-[doc/policy/mempool-terminology.md](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-terminology.md)
+[doc/policy/mempool-terminology.md](https://github.com/tsellcoin/tsellcoin/blob/master/doc/policy/mempool-terminology.md)
 and
-[doc/policy/mempool-replacements.md](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-replacements.md).
+[doc/policy/mempool-replacements.md](https://github.com/tsellcoin/tsellcoin/blob/master/doc/policy/mempool-replacements.md).
 
 P2P and network changes
 -----------------------
@@ -142,7 +142,7 @@ be relayed. (#33892)
 
 - The release has asmap data embedded for the first time, allowing the asmap
 feature to be used without any externally sourced file. The embedded map [was
-created on 2026-03-05](https://github.com/bitcoin/bitcoin/pull/34696). Despite
+created on 2026-03-05](https://github.com/tsellcoin/tsellcoin/pull/34696). Despite
 the data being available, the option remains off-by-default. Users still need to
 set `-asmap` or `-asmap=1` explicitly to make it possible to use a peer's ASN
 (ISP/hoster identifier) in netgroup bucketing in order to ensure a higher
@@ -185,7 +185,7 @@ Updated settings
 ----------------
 
 - The `-paytxfee` startup option and the `settxfee` RPC are now deleted after
-being deprecated in Bitcoin Core 30.0. They used to allow the user to set a
+being deprecated in TsellCoin Core 30.0. They used to allow the user to set a
 static fee rate for wallet transactions, which could potentially lead to
 overpaying or underpaying. Users should instead rely on fee estimation or
 specify a fee rate per transaction using the `fee_rate` argument in RPCs such as
@@ -236,7 +236,7 @@ is empty. (gui#924)
 Fee Estimation
 --------------
 
-The Bitcoin Core fee estimator minimum fee rate bucket was updated from **1
+The TsellCoin Core fee estimator minimum fee rate bucket was updated from **1
 sat/vB** to **0.1 sat/vB**, which matches the node’s default `minrelaytxfee`. This
 means that for a given confirmation target, if a sub-1 sat/vB fee rate bucket is
 the minimum tracked with sufficient data, its average value will be returned as
@@ -379,4 +379,4 @@ Thanks to everyone who directly contributed to this release:
 - zaidmstrr
 
 As well as to everyone that helped with translations on
-[Transifex](https://explore.transifex.com/bitcoin/bitcoin/).
+[Transifex](https://explore.transifex.com/tsellcoin/tsellcoin/).

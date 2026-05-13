@@ -1,4 +1,4 @@
-# Copyright (c) 2023-present The Bitcoin Core developers
+# Copyright (c) 2023-present The TsellCoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or https://opensource.org/license/mit/.
 
@@ -145,9 +145,9 @@ target_link_libraries(fuzz
   core_interface
   fuzzer_interface
   test_fuzz
-  bitcoin_cli
-  bitcoin_common
-  bitcoin_util
+  tsellcoin_cli
+  tsellcoin_common
+  tsellcoin_util
   minisketch
   leveldb
   univalue

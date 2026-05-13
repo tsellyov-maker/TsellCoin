@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-present The Bitcoin Core developers
+// Copyright (c) 2009-present The TsellCoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -113,7 +113,7 @@ int fork_daemon(bool nochdir, bool noclose, TokenPipeEnd& endpoint)
 static bool ParseArgs(NodeContext& node, int argc, char* argv[])
 {
     ArgsManager& args{*Assert(node.args)};
-    // If Qt is used, parameters/bitcoin.conf are parsed in qt/bitcoin.cpp's main()
+    // If Qt is used, parameters/tsellcoin.conf are parsed in qt/tsellcoin.cpp's main()
     SetupServerArgs(args, node.init->canListenIpc());
     std::string error;
     if (!args.ParseParameters(argc, argv, error)) {
@@ -127,7 +127,7 @@ static bool ParseArgs(NodeContext& node, int argc, char* argv[])
     // Error out when loose non-argument tokens are encountered on command line
     for (int i = 1; i < argc; i++) {
         if (!IsSwitchChar(argv[i][0])) {
-            return InitError(Untranslated(strprintf("Command line contains unexpected token '%s', see bitcoind -h for a list of options.", argv[i])));
+            return InitError(Untranslated(strprintf("Command line contains unexpected token '%s', see tsellcoind -h for a list of options.", argv[i])));
         }
     }
     return true;
@@ -148,12 +148,12 @@ static bool ProcessInitCommands(interfaces::Init& init, ArgsManager& args)
             strUsage += FormatParagraph(LicenseInfo());
         } else {
             strUsage += "\n"
-                "The " CLIENT_NAME " daemon (bitcoind) is a headless program that connects to the Bitcoin network to validate and relay transactions and blocks, as well as relaying addresses.\n\n"
-                "It provides the backbone of the Bitcoin network and its RPC, REST and ZMQ services can provide various transaction, block and address-related services.\n\n"
+                "The " CLIENT_NAME " daemon (tsellcoind) is a headless program that connects to the TsellCoin network to validate and relay transactions and blocks, as well as relaying addresses.\n\n"
+                "It provides the backbone of the TsellCoin network and its RPC, REST and ZMQ services can provide various transaction, block and address-related services.\n\n"
                 "There is an optional wallet component which provides transaction services.\n\n"
                 "It can be used in a headless environment or as part of a server setup.\n"
                 "\n"
-                "Usage: bitcoind [options]\n"
+                "Usage: tsellcoind [options]\n"
                 "\n";
             strUsage += args.GetHelpMessage();
         }
@@ -181,7 +181,7 @@ static bool AppInit(NodeContext& node)
     std::any context{&node};
     try
     {
-        // -server defaults to true for bitcoind but not for the GUI so do this here
+        // -server defaults to true for tsellcoind but not for the GUI so do this here
         args.SoftSetBoolArg("-server", true);
         // Set this early so that parameter interactions go to console
         InitLogging(args);
@@ -269,7 +269,7 @@ MAIN_FUNCTION
 
     SetupEnvironment();
 
-    // Connect bitcoind signal handlers
+    // Connect tsellcoind signal handlers
     noui_connect();
 
     util::ThreadSetInternalName("init");

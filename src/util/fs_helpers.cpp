@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-present The Bitcoin Core developers
+// Copyright (c) 2009-present The TsellCoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -317,7 +317,7 @@ bool IsDirWritable(const fs::path& dir_path)
 
     const char* mode;
 #ifdef __MINGW64__
-    mode = "w"; // Temporary workaround for https://github.com/bitcoin/bitcoin/issues/30210
+    mode = "w"; // Temporary workaround for https://github.com/tsellcoin/tsellcoin/issues/30210
 #else
     mode = "wx";
 #endif
