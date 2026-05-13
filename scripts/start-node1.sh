@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
+set -e
+
 cd /home/tsellyov/Projetos/TsellCoin/tsellcoin-core
 
 ./build/bin/tsellcoind \
-  -datadir=$HOME/.tsellcoin-node1 \
+  -datadir="$HOME/.tsellcoin-node1" \
   -daemon \
   -server=1 \
   -listen=1 \
