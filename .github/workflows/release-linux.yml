@@ -1,0 +1,102 @@
+name: Build Linux Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            build-essential cmake pkg-config python3 \
+            libevent-dev libboost-dev libsqlite3-dev \
+            libzmq3-dev systemtap-sdt-dev \
+            capnproto libcapnp-dev
+
+      - name: Configure
+        run: |
+          cmake -B build-release \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_GUI=OFF \
+            -DENABLE_IPC=OFF \
+            -DBUILD_TESTS=OFF \
+            -DBUILD_BENCH=OFF
+
+      - name: Build
+        run: |
+          cmake --build build-release -j"$(nproc)"
+
+      - name: Package release
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          ARCH="linux-x86_64"
+          NAME="tsellcoin-${VERSION}-${ARCH}"
+
+          mkdir -p "dist/$NAME"
+
+          cp build-release/bin/tsellcoind "dist/$NAME/"
+          cp build-release/bin/tsellcoin-cli "dist/$NAME/"
+          cp build-release/bin/tsellcoin "dist/$NAME/"
+
+          strip "dist/$NAME/tsellcoind" || true
+          strip "dist/$NAME/tsellcoin-cli" || true
+          strip "dist/$NAME/tsellcoin" || true
+
+          cat > "dist/$NAME/README.md" <<EOF
+          # TsellCoin Core $VERSION
+
+          Experimental TsellCoin Core Linux x86_64 release.
+
+          Genesis:
+          000095e23d5aa4c0fcc3cdf77dcc0f223bfd11bde228600a1adf534298e96d8c
+
+          P2P port:
+          18388
+
+          Bech32 prefix:
+          tsc
+
+          Warning: experimental software.
+          EOF
+
+          cd dist
+          tar -czf "$NAME.tar.gz" "$NAME"
+          sha256sum "$NAME.tar.gz" > "$NAME.tar.gz.sha256"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          ARCH="linux-x86_64"
+          NAME="tsellcoin-${VERSION}-${ARCH}"
+
+          gh release create "$GITHUB_REF_NAME" \
+            "dist/$NAME.tar.gz" \
+            "dist/$NAME.tar.gz.sha256" \
+            --title "TsellCoin Core $GITHUB_REF_NAME" \
+            --notes "Experimental TsellCoin Core Linux release.
+
+          Includes:
+          - tsellcoind
+          - tsellcoin-cli
+          - tsellcoin
+
+          Network:
+          - Genesis: 000095e23d5aa4c0fcc3cdf77dcc0f223bfd11bde228600a1adf534298e96d8c
+          - P2P port: 18388
+          - Bech32 prefix: tsc
+
+          Warning: experimental software."
