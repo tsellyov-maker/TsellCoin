@@ -100,3 +100,53 @@ jobs:
           - Bech32 prefix: tsc
 
           Warning: experimental software."
+
+          cd "$GITHUB_WORKSPACE"
+
+          DEB_NAME="tsellcoin-${VERSION}-linux-amd64.deb"
+          DEB_DIR="dist/deb/tsellcoin"
+
+          rm -rf "dist/deb"
+          mkdir -p "$DEB_DIR/DEBIAN"
+          mkdir -p "$DEB_DIR/usr/bin"
+          mkdir -p "$DEB_DIR/usr/share/doc/tsellcoin"
+
+          cp build-release/bin/tsellcoind "$DEB_DIR/usr/bin/"
+          cp build-release/bin/tsellcoin-cli "$DEB_DIR/usr/bin/"
+          cp build-release/bin/tsellcoin "$DEB_DIR/usr/bin/"
+
+          strip "$DEB_DIR/usr/bin/tsellcoind" || true
+          strip "$DEB_DIR/usr/bin/tsellcoin-cli" || true
+          strip "$DEB_DIR/usr/bin/tsellcoin" || true
+
+          cat > "$DEB_DIR/DEBIAN/control" <<EOF
+          Package: tsellcoin
+          Version: $VERSION
+          Section: utils
+          Priority: optional
+          Architecture: amd64
+          Maintainer: Tsell Yov <tsellyov@gmail.com>
+          Description: Experimental TsellCoin Core node and CLI
+           TsellCoin is an experimental Bitcoin Core fork.
+           Includes tsellcoind, tsellcoin-cli and tsellcoin.
+          EOF
+
+          cat > "$DEB_DIR/usr/share/doc/tsellcoin/README.md" <<EOF
+          # TsellCoin Core $VERSION
+
+          Experimental TsellCoin Core package.
+
+          Genesis:
+          000095e23d5aa4c0fcc3cdf77dcc0f223bfd11bde228600a1adf534298e96d8c
+
+          P2P port:
+          18388
+
+          Bech32 prefix:
+          tsc
+
+          Warning: experimental software.
+          EOF
+
+          dpkg-deb --build "$DEB_DIR" "dist/$DEB_NAME"
+          sha256sum "dist/$DEB_NAME" > "dist/$DEB_NAME.sha256"
